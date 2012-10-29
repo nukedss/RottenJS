@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Rotten Tomatoes JS API | Testing</title>
+		<link href="http://code.jquery.com/qunit/qunit-1.9.0.css" rel='stylesheet' type='text/css' />
+	</head>
+	<body>
+  		<div id="qunit"></div>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.9.0.js"></script>
+		<script type="text/javascript" src="js/rotten.api.js"></script>
+  		<script type='text/javascript'>
+			function getKey(){
+				var qstring = location.search.substr(1),
+					items = qstring.split("&");
+				
+				console.log(qstring);
+				console.log(items);
+				
+				for(var n=0;n<items.length;n++){
+					var item = items[n].split("="),
+						name = item[0],
+						value = item[1];
+					
+					if(name === "key")
+						return value;
+				}
+				
+				return undefined;
+			}
+			
+			$(function(){
+				var apikey = getKey();
+
+				console.log("key => ", apikey);
+				
+				if(apikey === undefined)
+					return;
+				
+	  			//zd7utbx6ekrvvyuptqru6wb8
+	  			RottenTomatoes.api({apiKey: apikey});
+	  			
+	  			console.info(typeof (function(){}));
+	  			
+	  			module("RottenTomatoes.createData");
+	  			
+		  		test( "Movie Search", function() {
+		  			var data0 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_SEARCH, RottenTomatoes.Consts.OP_MOVIE_SEARCH),
+		  				data1 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_SEARCH, RottenTomatoes.Consts.OP_MOVIE_SEARCH, [ "Red Dawn" ]),
+		  				data2 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_SEARCH, RottenTomatoes.Consts.OP_MOVIE_SEARCH, [ "Red Dawn", 10 ]),
+		  				data3 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_SEARCH, RottenTomatoes.Consts.OP_MOVIE_SEARCH, [ "Red Dawn", 10, 1 ]);
+		  			
+			  		  deepEqual( data0, {apikey: apikey} );
+			  		  deepEqual( data1, {apikey: apikey, q: "Red Dawn"} );
+			  		  deepEqual( data2, {apikey: apikey, q: "Red Dawn", page_limit: 10} );
+			  		  deepEqual( data3, {apikey: apikey, q: "Red Dawn", page_limit: 10, page: 1} );
+		  		});
+	
+		  		test( "Get Lists", function() {
+					  var data0 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_LISTS);
+		  			
+			  		  deepEqual( data0, {apikey: apikey} );
+		  		});
+		  		test( "Get Movie Lists", function() {
+					  var data0 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_MOVIELISTS);
+		  			
+			  		  deepEqual( data0, {apikey: apikey} );
+		  		});
+		  		test( "Get Box Office List", function() {
+		  			var data0 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_BOXOFFICE),
+		  				data1 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_BOXOFFICE, [ 10 ]),
+		  				data2 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_BOXOFFICE, [ 10, "us" ]);
+		  			
+			  		  deepEqual( data0, {apikey: apikey} );
+			  		  deepEqual( data1, {apikey: apikey, limit: 10} );
+			  		  deepEqual( data2, {apikey: apikey, limit: 10, country: "us"} );
+		  		});
+		  		test( "Get In-Theater List", function() {
+		  			var data0 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_INTHEATERS),
+		  				data1 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_INTHEATERS, [ 10 ]),
+		  				data2 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_INTHEATERS, [ 10, 1 ]),
+		  				data3 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_INTHEATERS, [ 10, 1, "us" ]);
+		  			
+			  		  deepEqual( data0, {apikey: apikey} );
+			  		  deepEqual( data1, {apikey: apikey, page_limit: 10} );
+			  		  deepEqual( data2, {apikey: apikey, page_limit: 10, page: 1} );
+			  		  deepEqual( data3, {apikey: apikey, page_limit: 10, page: 1, country: "us"} );
+		  		});
+		  		test( "Get Opening List", function() {
+		  			var data0 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_OPENING),
+		  				data1 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_OPENING, [ 10 ]),
+		  				data2 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_OPENING, [ 10, "us" ]);
+		  			
+			  		  deepEqual( data0, {apikey: apikey} );
+			  		  deepEqual( data1, {apikey: apikey, limit: 10} );
+			  		  deepEqual( data2, {apikey: apikey, limit: 10, country: "us"} );
+		  		});
+		  		test( "Get Upcoming List", function() {
+		  			var data0 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_INTHEATERS),
+		  				data1 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_INTHEATERS, [ 10 ]),
+		  				data2 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_INTHEATERS, [ 10, 1 ]),
+		  				data3 = RottenTomatoes.createData(RottenTomatoes.Consts.OP_GET, RottenTomatoes.Consts.OP_GET_INTHEATERS, [ 10, 1, "us" ]);
+		  			
+			  		  deepEqual( data0, {apikey: apikey} );
+			  		  deepEqual( data1, {apikey: apikey, page_limit: 10} );
+			  		  deepEqual( data2, {apikey: apikey, page_limit: 10, page: 1} );
+			  		  deepEqual( data3, {apikey: apikey, page_limit: 10, page: 1, country: "us"} );
+		  		});
+
+			})
+  		</script>
+	</body>
+</html>
